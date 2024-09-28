@@ -1,0 +1,87 @@
+import axios from 'axios'; // Axios is used for making HTTP requests
+import React, { useEffect, useState } from 'react'; // React hooks (useState, useEffect) are imported for managing state and side effects
+
+const App = () => {
+  const [tableData, setTableData] = useState([]); // State to store the fetched table data (user data)
+  const [currentPage, setCurrentPage] = useState(1); // State to manage the current page for pagination
+  const [rowsPerPage, setRowsPerPage] = useState(10); // State to manage the number of rows per page (pagination limit)
+  const [haveMore, setHaveMore] = useState(true); // State to determine if more data is available to fetch
+  const [loading, setLoading] = useState(false); // State to manage the loading state while data is being fetched
+
+  // Function to fetch data from API
+  const fetchData = async () => {
+    try {
+      setLoading(true); // Set loading to true when data fetching starts
+      const response = await axios.get(
+        `https://dummyjson.com/users?limit=${rowsPerPage}&skip=${(currentPage - 1) * rowsPerPage}`
+      ); // Fetch data using axios, setting limit and skip based on rowsPerPage and currentPage
+      const responseData = response?.data?.users; // Extract the users array from the response
+      if (currentPage === 1) {
+        setTableData(responseData); // Replace data on first page load or when rowsPerPage changes
+      } else {
+        setTableData((prev) => [...prev, ...responseData]); // Append more data for subsequent pages
+      }
+      setHaveMore(responseData?.length > 0); // Determine if more data is available based on response length
+    } catch (error) {
+      console.log(error); // Log any error that occurs during the API request
+    } finally {
+      setLoading(false); // Set loading to false after data fetching completes
+    }
+  };
+
+  // useEffect to trigger data fetch when currentPage or rowsPerPage changes
+  useEffect(() => {
+    fetchData(); // Fetch data whenever currentPage or rowsPerPage changes
+  }, [currentPage, rowsPerPage]); // Dependency array to ensure effect runs on changes to currentPage and rowsPerPage
+
+  // Function to handle infinite scrolling
+  const hanldeScroll = () => {
+    // Check if the user has scrolled to the bottom of the page, and trigger the next page load
+    if (window.innerHeight + document.documentElement.scrollTop >= document.documentElement.scrollHeight - 1 && haveMore && !loading) {
+      setCurrentPage((prev) => prev + 1); // Increment currentPage when user scrolls to the bottom
+    }
+  };
+
+  // useEffect to add and clean up scroll event listener
+  useEffect(() => {
+    window.addEventListener("scroll", hanldeScroll); // Attach scroll event listener to trigger pagination
+    return () => window.removeEventListener("scroll", hanldeScroll); // Cleanup event listener on unmount or re-render
+  }, [loading, haveMore]); // Dependencies to ensure effect re-runs when loading or haveMore changes
+
+  // Handle the change in rowsPerPage when the user selects a different value
+  const handleRowsPerChange = (e) => {
+    setRowsPerPage(parseInt(e.target.value, 10)); // Update rowsPerPage based on user selection
+    setCurrentPage(1); // Reset currentPage to 1 when rowsPerPage changes to load new data accordingly
+  };
+
+  return (
+    <div>
+      <h1>Infinite Scroll Example</h1>
+      <div>
+        {/* Dropdown to allow user to select number of rows per page */}
+        <label>Rows Per Page:</label>
+        <select name="rowsperpage" value={rowsPerPage} onChange={handleRowsPerChange}>
+          <option value={10}>10</option>
+          <option value={20}>20</option>
+          <option value={30}>30</option>
+        </select>
+      </div>
+      <ul>
+        {/* Map through the tableData array and display each user's id and firstName */}
+        {tableData.map(({ id, firstName }) => (
+          <li key={id}>
+            <h2>{id}</h2>
+            <p>{firstName}</p>
+          </li>
+        ))}
+      </ul>
+
+      {/* Display loading message when data is being fetched */}
+      {loading && <p>Loading...</p>}
+      {/* Display message when no more data is available */}
+      {!haveMore && <p>No more posts to load.</p>}
+    </div>
+  );
+};
+
+export default App; // Export the component as the default export
