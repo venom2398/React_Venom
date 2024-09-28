@@ -1,0 +1,60 @@
+import React, { useEffect, useState } from 'react' // Importing React and necessary hooks
+
+const App = () => {
+  const [time, setTime] = useState(0); // State to store time in milliseconds
+  const [isRunning, setIsRunning] = useState(false); // State to track whether the stopwatch is running
+
+  useEffect(() => {
+    let interval; // Variable to store the interval
+    if (isRunning) {
+      // If the stopwatch is running
+      interval = setInterval(() => {
+        setTime(prev => prev + 10); // Increment time by 10 milliseconds every 10 milliseconds
+      }, 10); // Setting interval to 10 milliseconds
+    } else if (!isRunning && time !== 0) {
+      // If the stopwatch is stopped but the time is not zero
+      clearInterval(interval); // Clear the interval
+    }
+    return () => clearInterval(interval); // Cleanup function to clear the interval when component unmounts or when isRunning changes
+  }, [isRunning]); // Effect depends on isRunning state
+
+  const handleStartorStop = () => {
+    setIsRunning(!isRunning); // Toggle the running state (start or stop)
+  }
+
+  const handleReset = () => {
+    setIsRunning(false); // Stop the stopwatch
+    setTime(0); // Reset the time to 0
+  }
+
+  const formatDate = () => {
+    const min = Math.floor(time / 60000); // Convert time to minutes
+    const sec = Math.floor((time % 60000) / 1000); // Convert time to seconds
+    const milli = Math.floor((time % 1000) / 10); // Convert time to milliseconds (tens)
+
+    //One more way
+    //const date = new Date(time);
+    //const min = date.getUTCMinutes();
+    //const sec = date.getUTCSeconds();
+    //const milli = Math.floor(date.getUTCMilliseconds()/10)
+
+    return `
+    ${min.toString().padStart(2, "0")}:
+    ${sec.toString().padStart(2, "0")}:
+    ${milli.toString().padStart(2, "0")}
+    `; // Format the time as MM:SS:MS
+  }
+
+  return (
+    <>
+      <div><h1>StopWatch</h1></div> {/* Displaying a title for the stopwatch */}
+      {formatDate()} {/* Displaying the formatted time */}
+      <div>
+        <button onClick={handleStartorStop}>{isRunning ? "Stop" : "Start"}</button> {/* Button to start or stop the stopwatch */}
+        <button onClick={handleReset}>Reset</button> {/* Button to reset the stopwatch */}
+      </div>
+    </>
+  )
+}
+
+export default App; // Exporting the App component
