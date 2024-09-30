@@ -1,0 +1,44 @@
+// Traffic Signal component
+import React from 'react';
+import { useEffect, useState } from 'react';
+
+const App = () => {
+  // State variable to store the current signal color
+  const [signal, setSignal] = useState('red');
+
+  // Effect hook to manage the signal state and transitions
+  useEffect(() => {
+    if (signal === 'red') {
+      setTimeout(() => {
+        // Change signal to yellow after 2 seconds
+        setSignal('yellow');
+      }, 2000);
+    } else if (signal === 'yellow') {
+      setTimeout(() => {
+        // Change signal to green after 2 seconds
+        setSignal('green');
+      }, 2000);
+    } else if (signal === 'green') {
+      setTimeout(() => {
+        // Change signal back to red after 2 seconds
+        setSignal('red');
+      }, 2000);
+    }
+  }, [signal]); // Re-run the effect when the signal state changes
+
+  return (
+    <>
+      <div><h3>Traffic Signal</h3></div> {/* Display the title */}
+      <div style={{ backgroundColor: 'white', height: '300px', width: '100px', display: 'flex', flexDirection: 'column', justifyContent: 'space-around', alignItems: 'center' }}>
+        {/* Circular div for the red light */}
+        <div style={{ backgroundColor: signal === 'red' ? 'red' : 'white', height: '80px', width: '80px', borderRadius: '50%' }} />
+        {/* Circular div for the yellow light */}
+        <div style={{ backgroundColor: signal === 'yellow' ? 'yellow' : 'white', height: '80px', width: '80px', borderRadius: '50%' }} />
+        {/* Circular div for the green light */}
+        <div style={{ backgroundColor: signal === 'green' ? 'green' : 'white', height: '80px', width: '80px', borderRadius: '50%' }} />
+      </div>
+    </>
+  );
+};
+
+export default App;
