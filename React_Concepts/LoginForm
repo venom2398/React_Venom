@@ -1,0 +1,174 @@
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom"; // Import useNavigate for programmatic navigation
+
+// Predefined user data
+const userData = {
+  0: { id: 1, email: "aDsvcW@a.com", password: "Bak@#23ddfvcded" },
+  1: { id: 2, email: "bdscxcvcv@b.com", password: "Baf@#24ddfvcded" },
+  2: { id: 3, email: "cwe@c.com", password: "Ber@!2ddfvcWed" },
+  3: { id: 4, email: "dwwe@d.com", password: "Baf@#24ddfvcded" },
+};
+
+const App = () => {
+  const initialState = {
+    email: "",
+    password: "",
+  };
+  const initialStatePasswordValidation = {
+    minLength: false,
+    hasUpperCase: false,
+    hasLowerCase: false,
+    hasNumber: false,
+    hasSpecialChar: false,
+  };
+
+  const [data, setData] = useState(initialState);
+  const [errors, setErrors] = useState({ email: "", general: "" });
+  const [passwordValidation, setPasswordValidation] = useState(initialStatePasswordValidation);
+  
+  const navigate = useNavigate(); // Initialize navigate hook
+
+  // Email validation regex
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  const validateEmail = (email) => {
+    if (email.length === 0) {
+      return ""; // No error for empty email input
+    }
+    if (!emailRegex.test(email)) {
+      return "Please enter a valid email.";
+    }
+    return "";
+  };
+
+  const validatePassword = (password) => {
+    const newPasswordValidation = {
+      minLength: password.length >= 12,
+      hasUpperCase: /[A-Z]/.test(password),
+      hasLowerCase: /[a-z]/.test(password),
+      hasNumber: /\d/.test(password),
+      hasSpecialChar: /[!@#$%^&*(),.?":{}|<>]/.test(password),
+    };
+    setPasswordValidation(newPasswordValidation);
+    return Object.values(newPasswordValidation).every((valid) => valid);
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setData({ ...data, [name]: value });
+
+    if (name === "email") {
+      const emailError = validateEmail(value);
+      setErrors({ ...errors, email: emailError });
+    }
+
+    if (name === "password") {
+      validatePassword(value);
+    }
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const emailError = validateEmail(data.email);
+    const isPasswordValid = validatePassword(data.password);
+
+    // Check for email and password validity
+    if (!emailError && isPasswordValid) {
+      // Check if the email and password match any of the predefined data
+      const foundUser = Object.values(userData).find(
+        (user) => user.email === data.email && user.password === data.password
+      );
+
+      if (foundUser) {
+        // Successful login - route to <JsxFile1 />
+        alert("Login successful!");
+        navigate("/jsxfile1"); // Navigate to JsxFile1 on successful login
+      } else {
+        // Show general error if email/password is incorrect
+        setErrors({ ...errors, general: "Email or password is incorrect." });
+      }
+    } else {
+      setErrors({ email: emailError });
+    }
+  };
+
+  return (
+    <div>
+      <h1>Login Form</h1>
+      <form
+        onSubmit={handleSubmit}
+        style={{ display: "flex", flexDirection: "column", rowGap: "20px" }}
+      >
+        <input
+          type="email"
+          name="email"
+          value={data.email}
+          placeholder="Email"
+          onChange={handleChange}
+          style={{ height: "5vh", width: "50vw" }}
+        />
+        {errors.email && <p style={{ color: "red" }}>{errors.email}</p>}
+        <input
+          type="password"
+          name="password"
+          value={data.password}
+          placeholder="Password"
+          onChange={handleChange}
+          style={{ height: "5vh", width: "50vw" }}
+        />
+        <ul>
+          <li style={{ color: passwordValidation.minLength ? "green" : "red" }}>
+            Password must be at least 12 characters long
+          </li>
+          <li
+            style={{
+              color: passwordValidation.hasUpperCase ? "green" : "red",
+            }}
+          >
+            Must contain at least one uppercase letter
+          </li>
+          <li
+            style={{
+              color: passwordValidation.hasLowerCase ? "green" : "red",
+            }}
+          >
+            Must contain at least one lowercase letter
+          </li>
+          <li style={{ color: passwordValidation.hasNumber ? "green" : "red" }}>
+            Must contain at least one number
+          </li>
+          <li
+            style={{
+              color: passwordValidation.hasSpecialChar ? "green" : "red",
+            }}
+          >
+            Must contain at least one special character
+          </li>
+        </ul>
+        {errors.general && <p style={{ color: "red" }}>{errors.general}</p>}
+        <button type="submit">Submit</button>
+      </form>
+    </div>
+  );
+};
+
+export default App;
+-----
+import React from 'react';
+import ReactDOM from 'react-dom/client'; // Correct import for React 18's createRoot
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import App from './App';
+import "./index.css"; // Import your styles if applicable
+import JsxFile1 from './JsxFile1'; // Import the component to route to
+
+// Correct usage of createRoot in React 18
+ReactDOM.createRoot(document.getElementById("root")).render(
+  <React.StrictMode>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<App />} />
+        <Route path="/jsxfile1" element={<JsxFile1 />} />
+      </Routes>
+    </BrowserRouter>
+  </React.StrictMode>
+);
