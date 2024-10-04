@@ -1,0 +1,135 @@
+import React, { useState } from "react"; // Importing React and useState hook
+
+const App = () => {
+  const initialState = {
+    email: "",
+    password: "",
+  }; // Initial state for form data
+
+  const initialStatePasswordValidation = {
+    minLength: false,
+    hasUpperCase: false,
+    hasLowerCase: false,
+    hasNumber: false,
+    hasSpecialChar: false,
+  }; // Initial state for password validation criteria
+
+  const [data, setData] = useState(initialState); // State to manage form data
+  const [errors, setErrors] = useState({ email: "" }); // State to manage form errors
+  const [passwordValidation, setPasswordValidation] = useState(initialStatePasswordValidation); // State to manage password validation status
+
+  // Email validation regex
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Regular expression to validate email format
+
+  const validateEmail = (email) => {
+    if (email.length === 0) {
+      return ""; // No error for empty email input
+    }
+    if (!emailRegex.test(email)) {
+      return "Please enter a valid email."; // Error message for invalid email format
+    }
+    return ""; // No error for valid email
+  };
+
+  const validatePassword = (password) => {
+    const newPasswordValidation = {
+      minLength: password.length >= 12, // Check if password is at least 12 characters long
+      hasUpperCase: /[A-Z]/.test(password), // Check if password contains an uppercase letter
+      hasLowerCase: /[a-z]/.test(password), // Check if password contains a lowercase letter
+      hasNumber: /\d/.test(password), // Check if password contains a number
+      hasSpecialChar: /[!@#$%^&*(),.?":{}|<>]/.test(password), // Check if password contains a special character
+    };
+    setPasswordValidation(newPasswordValidation); // Update password validation state
+    return Object.values(newPasswordValidation).every((valid) => valid); // Return true if all validation criteria are met
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target; // Destructure name and value from event target
+    setData({ ...data, [name]: value }); // Update form data state
+
+    if (name === "email") {
+      const emailError = validateEmail(value); // Validate email
+      setErrors({ ...errors, email: emailError }); // Update email error state
+    }
+
+    if (name === "password") {
+      validatePassword(value); // Validate password
+    }
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault(); // Prevent default form submission
+    const emailError = validateEmail(data.email); // Validate email on form submission
+    const isPasswordValid = validatePassword(data.password); // Validate password on form submission
+
+    if (!emailError && isPasswordValid) {
+      console.log(data); // Log form data to console
+      alert("Form submitted successfully!"); // Show success alert
+      setData(initialState); // Reset form data state
+      setErrors({ email: "" }); // Reset email error state
+      setPasswordValidation(initialStatePasswordValidation); // Reset password validation state
+    } else {
+      setErrors({ email: emailError }); // Set email error state if validation fails
+    }
+  };
+
+  return (
+    <div>
+      <h1>Login Form</h1> {/* Form title */}
+      <form
+        onSubmit={handleSubmit}
+        style={{ display: "flex", flexDirection: "column", rowGap: "20px" }} // Form styling
+      >
+        <input
+          type="email"
+          name="email"
+          value={data.email}
+          placeholder="Email"
+          onChange={handleChange}
+          style={{ height: "5vh", width: "50vw" }} // Email input styling
+        />
+        {errors.email && <p style={{ color: "red" }}>{errors.email}</p>} {/* Display email error */}
+        <input
+          type="password"
+          name="password"
+          value={data.password}
+          placeholder="Password"
+          onChange={handleChange}
+          style={{ height: "5vh", width: "50vw" }} // Password input styling
+        />
+        <ul>
+          <li style={{ color: passwordValidation.minLength ? "green" : "red" }}>
+            Password must be at least 12 characters long
+          </li> {/* Password length validation message */}
+          <li
+            style={{
+              color: passwordValidation.hasUpperCase ? "green" : "red",
+            }}
+          >
+            Must contain at least one uppercase letter
+          </li> {/* Uppercase letter validation message */}
+          <li
+            style={{
+              color: passwordValidation.hasLowerCase ? "green" : "red",
+            }}
+          >
+            Must contain at least one lowercase letter
+          </li> {/* Lowercase letter validation message */}
+          <li style={{ color: passwordValidation.hasNumber ? "green" : "red" }}>
+            Must contain at least one number
+          </li> {/* Number validation message */}
+          <li
+            style={{
+              color: passwordValidation.hasSpecialChar ? "green" : "red",
+            }}
+          >
+            Must contain at least one special character
+          </li> {/* Special character validation message */}
+        </ul>
+        <button type="submit">Submit</button> {/* Submit button */}
+      </form>
+    </div>
+  );
+};
+
+export default App; // Exporting the App component
