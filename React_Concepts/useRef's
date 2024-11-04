@@ -1,0 +1,70 @@
+**useRef** is a hook that allows us to create a reference to a DOM element or a value that persists across renders without causing the component to re-render when it changes. 
+It's often used when you want to directly access a DOM element or store a mutable value that doesn’t need to trigger a re-render.
+
+*) State (name):
+When handleClick is called, setName(name + 1) schedules an update to the state. However, state updates in React are asynchronous. 
+his means the console.log("State:", name) inside handleClick logs the current state value before the update is applied. Initially, name is 0, so it logs 0.
+
+*) Ref (word.current.value):
+The word ref is directly manipulated with word.current.value++. This operation is synchronous, so the increment happens immediately. 
+If word.current.value was initially null, trying to increment it would result in NaN. However, if it was initialized to a number (e.g., 0), it would increment to 1 immediately. 
+Since refs do not cause re-renders, the updated value is logged immediately.
+
+Example: - 
+
+import React, { useRef, useState } from 'react'
+
+const App = () => {
+
+  const word = useRef(null);
+  const [name, setName] = useState(0);
+
+  const handleClick=(e)=>{
+    e.preventDefault();
+    setName(name+1);
+    word.current.value++;
+
+    console.log("State:",name);
+    console.log("Ref:",word.current.value);
+
+  }
+
+  return (
+    <div>
+      <button onClick={handleClick}>State - {name}</button>
+      <button ref={word} onClick={handleClick}>Update</button>
+    </div>
+  )
+}
+
+export default App
+
+------------------
+
+example 2)
+
+import React, { useRef } from 'react'
+
+const App = () => {
+  const name = useRef(null);
+  
+  const [state, setState] = React.useState("basava");
+
+  const handleClick = (e) => {
+    e.preventDefault();
+    // setState("");
+    name.current.focus(); // this will keep the input box focused aftet submit button
+    name.current.style.color = "red" // this will change the text color
+    name.current.value = "kiran" // this will update the value to kiran.
+  }
+
+  return (
+    <div>
+      <h1>App</h1>
+      <input type="text" placeholder="Enter your name" value={state} onChange={(e) => setState(e.target.value)} ref={name}/>
+      <button onClick={handleClick}>Submit</button>
+    </div>
+  )
+}
+
+export default App
