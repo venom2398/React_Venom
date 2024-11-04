@@ -1,0 +1,61 @@
+import axios from 'axios';
+import React, { useState } from 'react';
+
+const App = () => {
+  const [data, setData] = useState(null);
+  const [error, setError] = useState(null);
+
+  const fetchData = async () => {
+    try {
+      const response = await axios.get('https://jsonplaceholder.typicode.com/users');
+      setData(response.data);
+    } catch (error) {
+      setError(error.message);
+    }
+  };
+
+  const postData = async () => {
+    try {
+      const response = await axios.post('https://jsonplaceholder.typicode.com/users', {
+        name: 'John Doe',
+        email: 'john.doe@example.com'
+      });
+      setData(response.data);
+    } catch (error) {
+      setError(error.message);
+    }
+  };
+
+  const updateData = async () => {
+    try {
+      const response = await axios.put('https://jsonplaceholder.typicode.com/users/1', {
+        name: 'John Doe Updated'
+      });
+      setData(response.data);
+    } catch (error) {
+      setError(error.message);
+    }
+  };
+
+  const deleteData = async () => {
+    try {
+      await axios.delete('https://jsonplaceholder.typicode.com/users/1');
+      setData(null);
+    } catch (error) {
+      setError(error.message);
+    }
+  };
+
+  return (
+    <div>
+      <button onClick={fetchData}>Fetch Data</button>
+      <button onClick={postData}>Post Data</button>
+      <button onClick={updateData}>Update Data</button>
+      <button onClick={deleteData}>Delete Data</button>
+      {data && <pre>{JSON.stringify(data, null, 2)}</pre>}
+      {error && <p style={{ color: 'red' }}>{error}</p>}
+    </div>
+  );
+};
+
+export default App;
