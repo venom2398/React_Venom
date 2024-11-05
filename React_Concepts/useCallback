@@ -28,3 +28,19 @@ const App = () => {
 };
 
 export default App;
+
+
+//Child Component
+import React from 'react'
+
+const JsxFile1 = ({click}) => {
+
+  console.log("Child Component")
+  click(); // here we call the memoized click function
+
+  return (
+    <div>JsxFile1</div>
+  )
+}
+
+export default React.memo(JsxFile1)
