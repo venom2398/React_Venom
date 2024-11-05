@@ -1,0 +1,38 @@
+**useContext**: - is a hook that allows us to share data easily between components without needing to pass props manually through every level of the component tree. 
+It makes it easier to access data from a context provider, which is useful for things like themes, user information, or any data that needs to be shared across multiple components.
+
+
+*) Parent Component: - it's a creator and also provider to children components
+import React, { useContext } from 'react'
+import JsxFile1 from './JsxFile1'
+
+export const NumberCount = React.createContext(0); // it will create context and export it.
+const App = () => {
+  const initialCount = 0;
+  return (
+    <div>
+      <NumberCount.Provider value={initialCount}> // this will provide the value via context.
+      <JsxFile1 />
+      </NumberCount.Provider>
+    </div>
+  )
+}
+
+export default App
+
+*) Child Component: - it's a consumer and also it uses the value provided by parent using useContext Hook.
+import { useContext, useState } from 'react';
+import { NumberCount } from './App'
+
+const JsxFile1 = () => {
+  const numCount = useContext(NumberCount); // here it will use the context by hook and take out the value from it.
+  const [count, setCount] = useState(numCount)
+
+  return (
+    <div>JsxFile1 - {count}
+    <button onClick={() => setCount(count + 1)}>Click</button>
+    </div>
+  )
+}
+
+export default JsxFile1
