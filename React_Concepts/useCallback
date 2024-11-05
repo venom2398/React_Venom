@@ -1,0 +1,30 @@
+**useCallback** is a hook that helps optimize performance by memoizing a function. It returns a cached version of a function that only changes if its dependencies change. 
+This is useful when you want to prevent unnecessary re-creation of functions, especially if they’re passed as props to child components, which could trigger unnecessary re-renders.
+
+
+/* In the below code, we memoize the click function because as the parent component re-renders, 
+the child component will also re-render so to avoid unnecessary re-renders, we memoize the click function */
+
+*) Example: -
+//Parent Component
+import React, { useCallback, useState } from 'react';
+import JsxFile1 from './JsxFile1';
+
+const App = () => {
+  const [count, setCount] = useState(0);
+
+  /* This useCallback will memoize the click function
+   and prevent unnecessary re-renders */
+  const click = useCallback(() => {
+    console.log("Triggered");
+  }, []);
+
+  return (
+    <div>
+      <JsxFile1 click={click}/> {/* here we pass the click function */}
+      <button onClick={()=>setCount(count + 1)}>button - {count}</button>
+    </div>
+  );
+};
+
+export default App;
