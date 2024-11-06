@@ -1,0 +1,71 @@
+**Custom Hook** is a JavaScript function that lets you reuse stateful logic across multiple components. 
+It allows you to extract common logic from components and use it anywhere in your app, helping to keep your code clean and organized. 
+Custom Hooks use built-in React hooks (like useState, useEffect, etc.) and usually start with the prefix "use"
+
+Example: -
+- Component that uses Hook and Set's URL using event
+import React, { useState } from 'react';
+import useFetchData from './JsxFile1';
+
+const App = () => {
+  /* the below is state for the url */
+  const [url, setUrl] = useState('');
+
+  /* the below is the hook that fetches the data */
+  const { data, loading, error } = useFetchData({ url });
+
+  /* the below is the function that sets the url */
+  const handleClick = () => {
+    setUrl('https://jsonplaceholder.typicode.com/posts');
+  };
+
+  return (
+    <div>
+      <h1>Data Fetching</h1>
+      <button onClick={handleClick}>Fetch</button>
+      {loading && <p>Loading...</p>}
+      {error && <p>Error: {error.message}</p>}
+      {data.length > 0 && <pre>
+        {JSON.stringify(data, null, 2)}
+      </pre>}
+    </div>
+  );
+};
+
+export default App;
+--------------
+- Component that created the hook and it receives the URL,fetch the data and returns them. 
+import axios from 'axios';
+import React, { useEffect, useState } from 'react'
+
+const useFetchData = ({url}) => {
+
+  /* the below are the states of the hook  */
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  /* the below is the function that fetches the data */
+  const fetchData = async() => {
+    if (!url) return;
+    try{
+      setLoading(true);
+      const res = await axios.get(url);
+      setData(res.data);
+    }catch(err){
+      setError(err);
+    }finally{
+      setLoading(false);
+    }
+  }
+  /* the below is the useEffect that calls the fetchData function
+  when the url changes */
+  useEffect(() => {
+    fetchData();
+  },[url]);
+
+  /* the below are the return values of the hook */
+  return {data, loading, error}
+}
+
+export default useFetchData;
