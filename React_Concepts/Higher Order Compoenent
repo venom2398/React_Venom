@@ -1,0 +1,55 @@
+A Higher-Order Component (HOC) is a function that takes a component and returns a new component, adding extra props or logic to it.
+Think of it as a wrapper that adds some extra behavior to an existing component, allowing us to reuse logic across multiple components.
+Example :-
+
+*)MainComponent:- Renders two ItemWithCart components with different names : -
+import React from 'react';
+import ItemWithCart from './JsxFile1';
+
+const App = () => (
+  <div>
+    <h1>Shopping Cart</h1>
+    <ItemWithCart name="Laptop" />
+    <ItemWithCart name="Headphones" />
+  </div>
+);
+
+export default App;
+---------------------
+
+*) HOC Component: - Wraps the Item component with withCartActions to create ItemWithCart
+import React, { useState } from 'react';
+import Item from "./JsxFile2";
+
+const withCartActions = (Component) => (props) => {
+  const [quantity, setQuantity] = useState(0);
+
+  const addToCart = () => setQuantity(quantity + 1);
+  const removeFromCart = () => setQuantity(quantity > 0 ? quantity - 1 : 0);
+
+  return (
+    <Component
+      {...props}
+      quantity={quantity}
+      addToCart={addToCart}
+      removeFromCart={removeFromCart}
+    />
+  );
+};
+
+export default withCartActions(Item);
+
+---------------------------------------
+*) Normal Component: - Item component, which displays the item name, quantity, and buttons to add or remove items from the cart.
+import React from 'react';
+
+const Item = ({ name, quantity, addToCart, removeFromCart }) => (
+  <div>
+    <h3>{name}</h3>
+    <p>Quantity: {quantity}</p>
+    <button onClick={addToCart}>Add to Cart</button>
+    <button onClick={removeFromCart}>Remove from Cart</button>
+  </div>
+);
+
+export default Item;
