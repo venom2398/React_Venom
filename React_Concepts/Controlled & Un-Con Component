@@ -1,0 +1,41 @@
+**Controlled component** the form element's value is controlled by React state. 
+This means that React is the "single source of truth" for the form data, and the input's value is updated through state.
+
+Example: -
+import React, { useState } from 'react';
+
+function ControlledComponent() {
+  const [name, setName] = useState('');
+
+  const handleChange = (e) => setName(e.target.value);
+
+  return (
+    <div>
+      <input type="text" value={name} onChange={handleChange} />
+      <p>Your name is: {name}</p>
+    </div>
+  );
+}
+
+export default ControlledComponent;
+---------------------------------------------------
+**uncontrolled component** the form element's value is handled by the DOM itself, and we access the value using a ref instead of React state.
+Example: -
+import React, { useRef } from 'react';
+
+function UncontrolledComponent() {
+  const inputRef = useRef(null);
+
+  const handleSubmit = () => {
+    alert(`Your name is: ${inputRef.current.value}`);
+  };
+
+  return (
+    <div>
+      <input type="text" ref={inputRef} />
+      <button onClick={handleSubmit}>Submit</button>
+    </div>
+  );
+}
+
+export default UncontrolledComponent;
