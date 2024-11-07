@@ -1,6 +1,62 @@
 A Higher-Order Component (HOC) is a function that takes a component and returns a new component, adding extra props or logic to it.
 Think of it as a wrapper that adds some extra behavior to an existing component, allowing us to reuse logic across multiple components.
-Example :-
+
+Example : -
+ * App Component:
+This is the main component that renders three instances of the Counter component, each wrapped in a different Higher-Order Component (HOC) (HOCGreen, HOCRed, HOCYellow).
+ * HOC Components:
+HOCGreen, HOCRed, and HOCYellow are HOCs that wrap the Counter component with different styles.
+Each HOC takes a component as a prop (cpm) and renders it inside a div with a specific color and heading.
+ * Counter Component:
+This component maintains a count state using the useState hook.
+It displays the current count and includes a button to increment the count when clicked.
+
+import React from 'react'
+/* this below Component code is for App */
+const App = () => {
+  return (
+    <div>
+      <HOCGreen cpm={Counter}/>
+      <HOCRed cpm={Counter}/>
+      <HOCYellow cpm={Counter}/>
+    </div>
+  )
+}
+
+/* this below Component code is for HOC */
+const HOCGreen = (props) => {
+  return (
+    <div style={{color:"green"}}> <h3>Green</h3> <props.cpm /> </div>
+  )
+}
+const HOCRed = (props) => {
+  return (
+    <div style={{color:"red"}}> <h3>Red</h3> <props.cpm /> </div>
+  )
+}
+const HOCYellow = (props) => {
+  return (
+    <div style={{color:"yellow"}}> <h3>Yellow</h3> <props.cpm /> </div>
+  )
+}
+
+/* this below Component code is for Counter Logic*/
+const Counter = () =>{
+  const [count, setCount] = React.useState(0)
+
+  return (
+    <div>
+      <p>You clicked {count} times</p>
+      <button onClick={() => setCount(count + 1)}>
+        Click me
+      </button>
+    </div>
+  )
+}
+export default App
+
+----------------------------------------------------
+Another Example :-
 
 *)MainComponent:- Renders two ItemWithCart components with different names : -
 import React from 'react';
