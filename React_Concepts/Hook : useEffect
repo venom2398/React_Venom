@@ -1,0 +1,43 @@
+**useEffect** is a hook that lets you run side effects in your components. 
+Side effects are actions that interact with something outside of React, like fetching data, updating the DOM, or setting up subscriptions.
+Think of it as a way to tell React, "Do something after rendering."
+
+Example: -
+import React, { useEffect, useState } from 'react'
+
+const App = () => {
+
+  const [state, setState] = useState(false);
+
+  const ProduceElectricity = () =>{
+    if(state === false){
+      console.log("Powered off");
+    }else{
+      console.log("powered ON!!")
+    }
+  }
+
+  const handleClick = () => {
+    setState(prev => !prev);
+  }
+
+  useEffect(()=>{
+    ProduceElectricity();
+  },[state]); // this will re-render the component every time with the change in dependecy
+
+  // useEffect(()=>{
+  //   ProduceElectricity();
+  // },[]); // this will render only once at starting of the component
+
+  // useEffect(()=>{
+  //   ProduceElectricity();
+  // }); // this will re-render the component every time without any dependency
+
+  return (
+    <div>
+      <button onClick={handleClick}>Button</button>
+    </div>
+  )
+}
+
+export default App
