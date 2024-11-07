@@ -1,0 +1,45 @@
+// Parent Component
+import React, { useState } from 'react';
+import JsxFile1 from './JsxFile1';
+
+const App = () => {
+  const [count, setCount] = useState(0);
+
+  return (
+    <div>
+      {/* The child Component <JsxFile1/> will render unnecessarily each time
+      when i click on the count button, as both are in same return block. */}
+      <button onClick={() => setCount(count + 1)}>Count {count}</button>
+      <JsxFile1 />
+    </div>
+  );
+};
+
+export default App;
+
+// Child Component
+import React, { memo } from 'react';
+
+const JsxFile1 = () => {
+  console.log('hello'); // We have added this console just for testing this child Component that it is redering unnecessarily or Not.
+
+  return (
+    <div>JsxFile1</div>
+  );
+};
+
+// Here we are wrapping the component with memo
+export default memo(JsxFile1);
+
+// Another way of memoing
+import React from 'react';
+
+const JsxFile1 = React.memo(() => {
+  console.log('hello'); // We have added this console just for testing this child Component that it is redering unnecessarily or Not.
+
+  return (
+    <div>JsxFile1</div>
+  );
+});
+
+export default JsxFile1;
