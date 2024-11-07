@@ -1,0 +1,18 @@
+useState is a hook that allows you to add state to functional components. 
+State is like a variable that React "remembers" even when the function re-runs due to re-renders. 
+It allows components to keep track of data that changes over time, like user input or a counter.
+
+import React, { useState } from 'react';
+
+function Counter() {
+  const [count, setCount] = useState(0); // Initializing state with 0
+
+  return (
+    <div>
+      <p>Count: {count}</p>
+      <button onClick={() => setCount(count + 1)}>Increment</button>
+    </div>
+  );
+}
+
+export default Counter;
