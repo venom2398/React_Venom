@@ -1,0 +1,31 @@
+**useMemo** is a hook that helps optimize performance by "memorizing" the result of a function. 
+It’s like a "calculator memory" — if you already know the result, you don't need to recalculate it. 
+This is useful when you have a function that does heavy calculations and you want to avoid re-computing it every time the component renders, especially if the inputs haven’t changed.
+
+Example : -
+import React, { useMemo, useState } from 'react';
+
+const App = () => {
+  // Declare state variables 'add' and 'sub' with initial values 0 and 100 respectively
+  const [add, setAdd] = useState(0);
+  const [sub, setSub] = useState(100);
+
+  // useMemo hook to memoize the 'multiply' function, which logs a message to the console
+  // This function will only re-run when the 'add' state changes
+  const multiply  = useMemo(() => {
+    console.log("multiply called");
+  }, [add]);
+
+  return (
+    <div>
+      {/* Display the result of the 'multiply' function */}
+      <div>{multiply}</div>
+      {/* Button to increment the 'add' state by 1 */}
+      <button onClick={() => setAdd(add + 1)}>ADD - {add}</button>
+      {/* Button to decrement the 'sub' state by 1 */}
+      <button onClick={() => setSub(sub - 1)}>SUBTRACT - {sub}</button>
+    </div>
+  );
+};
+
+export default App;
