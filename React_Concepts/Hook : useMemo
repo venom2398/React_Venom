@@ -29,3 +29,44 @@ const App = () => {
 };
 
 export default App;
+
+---------------
+example 2: -
+import React from 'react'
+import { useMemo } from 'react';
+import { useState } from 'react'
+
+const App = () => {
+
+  const [qunatity, setQunatity] = useState(0);
+  const [book, setBook] = useState(false);
+  
+  
+  const handleQunatity = () =>{
+    setQunatity(qunatity+1)
+  }
+
+  const handleBooking = () =>{
+    if(qunatity>0){
+      setBook(true);
+    }
+  }
+  const tickets = useMemo(() =>{
+    if(book === false){
+      console.log("Plese add the people for Booking");
+    }else{
+      console.log("Booked!!!!!!!!")
+    }
+  },[book])
+  
+  return (
+    <div>
+      <h2>Movie Ticket</h2>
+      {tickets}
+      <button onClick={handleQunatity}>Movie - Qunatity - {qunatity}</button>
+      <button onClick={handleBooking}>Book</button>
+    </div>
+  )
+}
+
+export default App
