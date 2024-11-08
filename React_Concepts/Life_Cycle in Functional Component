@@ -1,0 +1,30 @@
+React, lifecycle methods like componentDidMount, componentDidUpdate, 
+and componentWillUnmount in class components are used to control what happens when a component mounts (is added to the DOM), 
+updates (changes state or props), or unmounts (is removed from the DOM).
+
+Example: -
+import React, { useEffect, useState } from 'react';
+
+const CombinedExample = () => {
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    // here component will be mounted or updated
+    console.log('Component mounted or updated');
+
+    return () => {
+      //here component will be unmounted
+      console.log('Component will unmount');
+    };
+    //here the 'count' will be updated
+  }, [count]); // Runs on mount and when 'count' changes
+
+  return (
+    <div>
+      <p>Count: {count}</p>
+      <button onClick={() => setCount(count + 1)}>Increment</button>
+    </div>
+  );
+};
+
+export default CombinedExample;
