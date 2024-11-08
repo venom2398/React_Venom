@@ -1,0 +1,27 @@
+import React, { useState, memo } from 'react';
+**Pure Component** is a component that only re-renders if its props or state actually change. 
+It automatically does a "shallow comparison" of its previous and next props and state, preventing unnecessary re-renders and improving performance.
+
+Exmaple: -
+// Define a pure functional component using React.memo
+const Counter = memo(({ count }) => {
+  console.log("Counter component re-rendered");
+  return <p>Count: {count}</p>;
+});
+
+function App() {
+  const [count, setCount] = useState(0);
+  const [otherState, setOtherState] = useState(false);
+
+  console.log(otherState)
+
+  return (
+    <div>
+      <Counter count={count} />
+      <button onClick={() => setCount(count + 1)}>Increment</button>
+      <button onClick={() => setOtherState(!otherState)}>Toggle Other State</button>
+    </div>
+  );
+}
+
+export default App;
