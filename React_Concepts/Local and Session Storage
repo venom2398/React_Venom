@@ -1,0 +1,65 @@
+Local Storage is a part of the Web Storage API that provides a way to store data in the browser. 
+The stored data has no expiration time, meaning it remains in the browser until it is explicitly deleted by the user or the application. 
+Local Storage is useful for data that should persist across sessions and reboots.
+
+Example: -
+import React from 'react'
+import { useEffect } from 'react';
+import { useState } from 'react'
+
+const App = () => {
+  const [name, setName] = useState("");
+
+  useEffect(()=>{
+    const storedName = localStorage.getItem("name");
+    if (storedName) { 
+      setName(storedName);
+    }
+  },[])
+
+  useEffect(()=>{
+    localStorage.setItem("name", name)
+  },[name])
+
+  return (
+    <div>
+      <h1>Movie Name: - {name}</h1>
+      <input type="text" value={name} placeholder="Please Enter name" onChange={(e)=>setName(e.target.value)}/>
+    </div>
+  )
+}
+
+export default App
+--------
+Session Storage is similar to Local Storage but with a shorter lifespan.
+Data stored in Session Storage is only available for the duration of the page session.
+Once the browser tab is closed, the data is lost. Session Storage is useful for storing temporary data that doesn't need to persist across sessions.
+Example:-
+import React from 'react'
+import { useEffect } from 'react';
+import { useState } from 'react'
+
+const App = () => {
+
+  const [name, setName] = useState("");
+
+  useEffect(()=>{
+    const storedName = sessionStorage.getItem("name");
+    if (storedName) { 
+      setName(storedName);
+    }
+  },[])
+
+  useEffect(()=>{
+    sessionStorage.setItem("name", name)
+  },[name])
+
+  return (
+    <div>
+      <h1>Movie Name: - {name}</h1>
+      <input type="text" value={name} placeholder="Please Enter name" onChange={(e)=>setName(e.target.value)}/>
+    </div>
+  )
+}
+
+export default App
