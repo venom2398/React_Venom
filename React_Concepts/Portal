@@ -1,0 +1,47 @@
+**Portal** provides a way to render a child component into a DOM node that exists outside the parent component's hierarchy.
+This allows you to break out of the standard DOM tree rendering structure, 
+making it possible to render components into a different part of the DOM (e.g., modals, tooltips, or popups).
+
+example: -
+import React, { useState } from 'react';
+import ReactDOM from 'react-dom';
+
+const Modal = ({ onClose }) => {
+  return ReactDOM.createPortal(
+    <div style={modalStyles}>
+      <h2>This is a Modal</h2>
+      <button onClick={onClose}>Close Modal</button>
+    </div>,
+    document.body // This renders the modal directly to the body
+  );
+};
+
+const App = () => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const openModal = () => setIsModalOpen(true);
+  const closeModal = () => setIsModalOpen(false);
+
+  return (
+    <div>
+      <h1>React Portal Example</h1>
+      <button onClick={openModal}>Open Modal</button>
+
+      {isModalOpen && <Modal onClose={closeModal} />}
+    </div>
+  );
+};
+
+// Simple styles for the modal
+const modalStyles = {
+  position: 'fixed',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  padding: '20px',
+  backgroundColor: 'white',
+  border: '1px solid #ccc',
+  boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+};
+
+export default App;
