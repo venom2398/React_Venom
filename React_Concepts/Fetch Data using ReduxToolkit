@@ -1,0 +1,97 @@
+*Fetch data using redux*
+
+Main.js:-
+import { StrictMode } from 'react'
+import { createRoot } from 'react-dom/client'
+import App from './App.jsx'
+import './index.css'
+import { Provider } from 'react-redux'
+import { store } from './redux/store.jsx'
+
+createRoot(document.getElementById('root')).render(
+  <StrictMode>
+    <Provider store={store}>
+      <App />
+    </Provider>
+  </StrictMode>,
+)
+
+------------------------------------------------
+Store:-
+import { configureStore } from "@reduxjs/toolkit";
+import dataSlice from "./slice";
+
+export const store = configureStore({
+    reducer: {
+        data: dataSlice,
+    },
+});
+
+------------------------------------------------
+Slice:-
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import axios from "axios";
+
+const initialdata = {
+    data: [],
+    loading: false,
+    error: null
+}
+
+export const fetchData = createAsyncThunk("fetchData/data", async () => {
+    const res = await axios.get("https://jsonplaceholder.typicode.com/albums");
+    return res.data;
+})
+
+const dataSlice = createSlice({
+    name: "data",
+    initialState: initialdata,
+    reducers: {
+        reset: (state) => {
+            state.data = []
+            state.loading = false
+            state.error = null
+        }
+    },
+    extraReducers: (builder) => {
+        builder
+            .addCase(fetchData.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(fetchData.fulfilled, (state, action) => {
+                state.loading = false;
+                state.data = action.payload;
+                state.error = null;
+            })
+            .addCase(fetchData.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.error.message;
+            });
+    }
+})
+
+export default dataSlice.reducer;
+export const {reset} = dataSlice.actions; 
+
+------------------------------------------------
+App.js: -
+import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchData, reset } from './redux/slice';
+
+const App = () => {
+  const dispatch = useDispatch();
+  const { data, loading, error } = useSelector(state => state.data);
+
+  return (
+    <div>
+      <h1>Data Fetcher</h1>
+      <button onClick={() => dispatch(fetchData())}>Fetch Data</button>
+      <button onClick={() => dispatch(reset())}>Reset Data</button>
+      {loading ? <p>Loding....</p> : error ? <p>{error}</p> : <pre>{JSON.stringify(data, null, 2)}</pre>}
+    </div>
+  );
+}
+
+export default App;
